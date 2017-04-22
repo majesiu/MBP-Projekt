@@ -20,7 +20,7 @@ defmodule Match4 do
 
   defp get_player_token(id) do
     case id do
-      1 -> IO.ANSI.blue() <> "O" <> IO.ANSI.default_color()
+      1 -> IO.ANSI.blue() <> "@" <> IO.ANSI.default_color()
       _ -> IO.ANSI.red() <> "#" <> IO.ANSI.default_color()
     end
   end
