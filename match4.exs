@@ -18,6 +18,13 @@ defmodule Match4 do
     print_board(map, vert_row-1)
   end
 
+  defp get_player_token(id) do
+    case id do
+      1 -> IO.ANSI.blue() <> "O" <> IO.ANSI.default_color()
+      _ -> IO.ANSI.red() <> "#" <> IO.ANSI.default_color()
+    end
+  end
+
   defp find_highest(map, col) do
     find_highest(map, col, 5)
   end
@@ -49,7 +56,8 @@ defmodule Match4 do
 
   defp next_move(map, 3) do #AI controlled playah
     res = find_valid_moves(%{}, map, 6) |> Map.values |> Enum.random
-    Map.update(map, res, Integer.to_string(3), fn(_x)->Integer.to_string(3) end)
+    token = get_player_token(3)
+    Map.update(map, res, token, fn(_x)->token end)
     |> check_game_end(res, 3)
     |> next_move(1) #if 3==1 do 3 else 1 end
   end
@@ -71,7 +79,8 @@ defmodule Match4 do
         next_move(map, player)
       end
       pos = {input, highest}
-      Map.update(map, pos, Integer.to_string(player), fn(_x)->Integer.to_string(player) end)
+      token = get_player_token(player)
+      Map.update(map, pos, token, fn(_x)->token end)
       |> check_game_end(pos, player)
       |> next_move(if player==1 do 3 else 1 end)
     else
@@ -96,7 +105,7 @@ defmodule Match4 do
   defp check_game_end(map, res, player) do
     x = elem(res, 0)
     y = elem(res, 1)
-    pl = Integer.to_string(player)
+    pl = get_player_token(player)
     if(if(Map.get(map, {x-1, y}) == pl) do
       if(Map.get(map, {x-2, y}) == pl) do
         if(Map.get(map, {x-3, y}) == pl) do 3 else 2 end
