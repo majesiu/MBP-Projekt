@@ -18,6 +18,10 @@ defmodule Match4 do
     print_board(map, vert_row-1)
   end
 
+  defp find_highest(map, col) do
+    find_highest(map, col, 5)
+  end
+
   defp find_highest(map, col, 0) do
     if Map.get(map, {col, 0}, "0") == "0" do 0 else 1 end
   end
@@ -33,7 +37,7 @@ defmodule Match4 do
   defp find_valid_moves(valid, _map, -1) do valid end
 
   defp find_valid_moves(valid, map, col) do
-    found_highest = find_highest(map, col, 5)
+    found_highest = find_highest(map, col)
     if found_highest <= 5 do #only reasonable moves
     #valid -> {turn - 0 current, 1 next, column}->{x, y}
       Map.update(valid, {0, col}, {col, found_highest}, fn(_x)->{col, found_highest} end)
@@ -52,18 +56,29 @@ defmodule Match4 do
 
   defp next_move(map, player) do
     print_board(map, 5)
-    res = List.to_tuple(Enum.map(String.split(IO.gets("Player " <> Integer.to_string(player) <> " Make a move i.e. 5 5\n")), fn(x) -> String.to_integer(x) end))
+    input = case IO.getn("Player " <> Integer.to_string(player) <> " move: ", 1) |> Integer.parse do
+      {int, _} when int >= 0 and int <= 6 -> int
+      _ -> -1
+    end
+
+    IO.gets("")  # since reading only 1 byte we must read the rest to empty stdin
+
     # validation of the move
-    if tuple_size(res) == 2 and validate_move(map, res)
-    do
-      Map.update(map, res, Integer.to_string(player), fn(_x)->Integer.to_string(player) end)
-      |> check_game_end(res, player)
-      |> next_move(if player==1 do 3 else 1 end) #3 for pc controlled after do
-      else
-        IO.puts "Move not valid! Put your pieces on the bottom line or on top of already existing ones"
+    if input != -1 do
+      highest = find_highest(map, input)
+      if highest > 5 do
+        IO.puts "Column full! Input another"
         next_move(map, player)
       end
+      pos = {input, highest}
+      Map.update(map, pos, Integer.to_string(player), fn(_x)->Integer.to_string(player) end)
+      |> check_game_end(pos, player)
+      |> next_move(if player==1 do 3 else 1 end)
+    else
+      IO.puts "Move not valid! You must input a number that is in range 0-6"
+      next_move(map, player)
     end
+  end
 
   defp validate_move(map, res) do
     x = elem(res, 0)
