@@ -92,19 +92,6 @@ defmodule Match4 do
     end
   end
 
-  defp validate_move(map, res) do
-    x = elem(res, 0)
-    y = elem(res, 1)
-    if (x >= 0 and x <= 6) and (y >= 0 and y <= 5) and (Map.get(map, res, "0") == "0") and (
-      (y==0 and Map.get(map, {x, y+1}, "0") == "0") or
-      (y==4 and Map.get(map, {x, y+1}, "0") != "0") or
-      (Map.get(map, {x, y-1}, "0") != "0" and Map.get(map, {x, y+1}, "0") == "0")) do
-        true
-    else
-        false
-    end
-  end
-
   defp check_game_end(map, res, player) do
     x = elem(res, 0)
     y = elem(res, 1)
