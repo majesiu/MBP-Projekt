@@ -2,19 +2,21 @@ defmodule Match4 do
   #7 horizontal, 6 vertical
   # 0, 0 is bottom left, 6, 5 is top right
   defp print_board(map, -1) do
-    IO.puts "\t--0-1-2-3-4-5-6-"
+    IO.puts "\t  -----------------------------\n" <>
+      "\t    0   1   2   3   4   5   6\n"
     map
   end
 
   defp print_board(map, vert_row) do
-    IO.puts "\t"<>Integer.to_string(vert_row) <> "|" <>
-      Map.get(map, {0, vert_row}, " ") <> "|" <>
-      Map.get(map, {1, vert_row}, " ") <> "|" <>
-      Map.get(map, {2, vert_row}, " ") <> "|" <>
-      Map.get(map, {3, vert_row}, " ") <> "|" <>
-      Map.get(map, {4, vert_row}, " ") <> "|" <>
-      Map.get(map, {5, vert_row}, " ") <> "|" <>
-      Map.get(map, {6, vert_row}, " ") <> "|" 
+    IO.puts "\t  -----------------------------\n" <>
+      "\t"<>Integer.to_string(vert_row) <> " | " <>
+      Map.get(map, {0, vert_row}, " ") <> " | " <>
+      Map.get(map, {1, vert_row}, " ") <> " | " <>
+      Map.get(map, {2, vert_row}, " ") <> " | " <>
+      Map.get(map, {3, vert_row}, " ") <> " | " <>
+      Map.get(map, {4, vert_row}, " ") <> " | " <>
+      Map.get(map, {5, vert_row}, " ") <> " | " <>
+      Map.get(map, {6, vert_row}, " ") <> " | "
     print_board(map, vert_row-1)
   end
 
@@ -63,6 +65,7 @@ defmodule Match4 do
   end
 
   defp next_move(map, player) do
+    IO.puts ""
     print_board(map, 5)
     input = case IO.getn("Player " <> Integer.to_string(player) <> " move: ", 1) |> Integer.parse do
       {int, _} when int >= 0 and int <= 6 -> int
@@ -148,7 +151,8 @@ defmodule Match4 do
       else 0 end >= 3)
     do
       print_board(map, 5)
-      IO.puts "Player "<>Integer.to_string(player)<>" won the game!\n------------------\nStarting new game!"
+      IO.puts "Player " <> Integer.to_string(player) <> " won the game!\n" <>
+        "========================================\nStarting new game!\n"
       start_game()
     else
       if (
